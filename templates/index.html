@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="container dash-container">
+    
+    <!-- Analytics Header Panel -->
+    <div class="dashboard-top mt-3" style="display: flex; flex-wrap: wrap; gap: 2rem;">
+        <section class="analytics-panel glass" style="flex: 1; min-width:300px; padding:1.5rem;">
+            <div class="stat-box">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <h4>Tracked Items</h4>
+                    <h2>{{ total_tracked }}</h2>
+                </div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon">🌱</div>
+                <div class="stat-info">
+                    <h4>Avg Eco Score</h4>
+                    <h2>{{ avg_eco }}</h2>
+                </div>
+            </div>
+            <div class="stat-box highlight-stat">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-info">
+                    <h4>Active Good Deals</h4>
+                    <h2>{{ good_deals }}</h2>
+                </div>
+            </div>
+        </section>
+        
+        <section class="category-chart glass" style="width: 320px; padding: 1.5rem; display: flex; flex-direction:column; align-items:center; justify-content:center;">
+            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.9rem; letter-spacing:1px;">Category Breakdown</h4>
+            <div style="width: 150px; height: 150px; margin-top:1rem;">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <!-- Top Deals Horizontal Strip -->
+    {% if top_deals %}
+    <section class="top-deals mt-4">
+        <h2>🔥 Top Deals of the Day</h2>
+        <div class="deals-scroller mt-2">
+            {% for d in top_deals %}
+            <div class="glass deal-card shadow">
+                <h4 title="{{ d.name }}">{{ d.name[:30] }}...</h4>
+                <div class="deal-metrics mt-2">
+                    <span class="amount" style="color:var(--primary-dark); font-weight:bold; font-size:1.2rem;">₹{{ "%.2f"|format(d.current_price) }}</span>
+                    <span class="eco-tag" style="background:var(--danger);">⬇ {{ d.drop_pct }}% OFF</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Add Product Section -->
+    <section class="card glass mt-4">
+        <h2><span class="icon">➕</span> Add Product to Watchlist</h2>
+        <div class="add-form mt-2">
+            <input type="url" id="product-url" placeholder="Paste product URL here (e.g. Amazon)" required>
+            <button type="button" class="btn btn-primary" id="preview-btn" onclick="previewProduct()">Preview Link</button>
+        </div>
+        
+        <div id="preview-container" class="preview-card mt-3 animate-fade-in" style="display: none;">
+            <div class="preview-content">
+                <img id="preview-img" src="" alt="Preview" class="preview-thumbnail shadow">
+                <div class="preview-details">
+                    <h3 id="preview-title"></h3>
+                    <p class="preview-price" id="preview-price"></p>
+                    <div class="preview-tags mt-2" id="preview-tags"></div>
+                    <form action="/add" method="POST" class="mt-3">
+                        <input type="hidden" name="url" id="hidden-url">
+                        <button type="submit" class="btn btn-primary">✔ Add to Watchlist</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Comparison Engine -->
+    <section class="comparison-section mt-4 glass card animate-fade-in">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <h2>⚖️ Compare Category</h2>
+            <select id="compare-cat-select" class="btn btn-outline" onchange="compareCategory(this.value)" style="width:220px; padding:0.6rem; background:var(--glass-bg); color:var(--text-main);">
+                <option value="">Select Category...</option>
+            </select>
+        </div>
+        
+        <div id="compare-strip" class="deals-scroller mt-3" style="display:none; padding-bottom:1rem;">
+            <!-- Javascript injects cards here -->
+        </div>
+    </section>
+
+    <!-- Product Grid -->
+    <section class="products-dashboard mt-4">
+        <h2>Your Watchlist</h2>
+        <div class="product-grid">
+            {% if products %}
+                {% for p in products %}
+                <div class="product-card glass animate-float">
+                    <div class="product-header">
+                        <div class="header-left">
+                            {% if p.image_url %}
+                                <img src="{{ p.image_url }}" alt="{{ p.name }}" class="product-thumb shadow">
+                            {% endif %}
+                            <h3 title="{{ p.name }}">{{ p.name[:45] }}...</h3>
+                        </div>
+                        <span class="status-badge {{ p.status_class }}">{{ p.deal_status }}</span>
+                    </div>
+                    
+                    <div class="product-tags mt-2">
+                        <span class="eco-tag" style="background:#3498db;">{{ p.category }}</span>
+                        {% if p.tags %}
+                            {% for tag in p.tags.split(',') %}
+                                <span class="eco-tag">{{ tag }}</span>
+                            {% endfor %}
+                        {% endif %}
+                        <span class="eco-tag score-tag">Eco: {{ p.eco_score }}</span>
+                    </div>
+                    
+                    <div class="product-pricing mt-3">
+                        <div class="price-box">
+                            <span class="label">Current</span>
+                            <span class="amount">₹{{ "%.2f"|format(p.current_price) }}</span>
+                        </div>
+                        <div class="price-box">
+                            <span class="label">Target</span>
+                            {% if p.target_price and p.target_price > 0 %}
+                                <span class="amount target-amount">₹{{ "%.2f"|format(p.target_price) }}</span>
+                            {% else %}
+                                <span class="amount">--</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="target-form-wrapper mt-2">
+                        <form action="/set_target/{{ p.id }}" method="POST" class="target-form">
+                            <input type="number" step="0.01" name="target_price" placeholder="New Target" required>
+                            <button type="submit" class="btn btn-sm btn-outline">Set</button>
+                        </form>
+                    </div>
+                    
+                    <div class="product-footer mt-3">
+                        <small>Last: {{ p.last_updated }}</small>
+                        <div class="foot-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="showGraph({{ p.id }}, '{{ p.name | replace("'", "\\'") }}')">📈 Graph</button>
+                            <form action="/remove/{{ p.id }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Remove from watchlist?')">🗑</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state glass">
+                    <p>Your watchlist is empty. Add a URL above to start saving!</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- Graph Modal -->
+    <div id="graph-modal" class="modal glass-modal">
+        <div class="modal-content glass">
+            <span class="close" onclick="closeGraph()">&times;</span>
+            <h2 id="graph-title">Price History</h2>
+            <div class="chart-container mt-3">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    const userProducts = {{ products|tojson|safe if products else '[]' }};
+</script>
+{% endblock %}

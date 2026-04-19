@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-split">
+        <div class="auth-image login-image">
+            <div class="image-overlay">
+                <h2>Welcome Back!</h2>
+                <p>Log in to track your green deals and save money efficiently.</p>
+            </div>
+        </div>
+        <div class="auth-form-container">
+            <div class="glass-form">
+                <h2>Login to Watchlist</h2>
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="/register">Register here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
