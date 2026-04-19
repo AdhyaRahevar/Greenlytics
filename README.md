@@ -1,45 +1,88 @@
-# Green Price Tracker V2 - Multi-User Fresh Build Walkthrough
+# 🌱 Green Price Tracker
 
-Your entirely new, completely fresh Green Price Tracker V2 has natively generated in the **`Desktop/GPT`** directory exactly as requested!
+Green Price Tracker is a Python-based web app that helps users track product prices while promoting eco-friendly purchasing. Paste a product link to monitor price changes, compare deals, and discover greener alternatives.
 
-This build is vastly more sophisticated than the previous prototype. We moved entirely to a multi-tenant database schema, introduced comprehensive Flask Authentication with session protection, and brought a premium, visually stunning frontend packed with glassmorphism and real-time JavaScript analytics.
+---
 
-## 🔐 Authentication & Backend Architecture
+## 🚀 Core Idea
 
-### 1. Robust Registration & Login System
-We created a fully secure `login_required` interface. Users can visit `/register` to generate an account (passwords are heavily salted and hashed locally using `werkzeug.security`).
+Combines **price tracking + sustainability awareness** to help users save money and make responsible choices.
 
-### 2. Multi-User Database Relationships (`database.py`)
-- We dropped global targets and migrated to a `user_products` mapping table structure!
-- Now, when two totally identical links are posted by different users (like the same Amazon iPhone trace), the **scraper only hits the server once during the nightly background scan**, keeping overhead dramatically low!
-- Both users can then maintain distinct Target Prices independently for that same iPhone.
+---
 
-## 🎨 Design & Interactivity Upgrades
+## 🔗 Core Features
 
-### 1. Premium Glassmorphic Aesthetic (`style.css`)
-- Rebuilt from the ground up to utilize "frosted glass" containers via `backdrop-filter: blur()`. It provides extreme visual pop!
-- Added `animate-float` macros for dynamic hover interactions on the Product Cards.
-- Fluid animations dynamically scale containers into view.
+### 🌿 Link-Based Price Tracker
+- Paste a URL to generate a product card (name, price, image)  
+- Track price changes over time  
 
-### 2. Unified Analytics Dashboard 📊 (`index.html`)
-The main dashboard has scaled significantly from just a tracking list:
-- The top header immediately surfaces aggregate stat blocks based *strictly on your session*: Total tracked items, active good deal counts, and a compiled "Average Eco Score" highlighting your personal footprint tracking.
+### 🔔 Smart Price Alerts
+- Set a target price  
+- Get notified when prices drop  
+- “🔥 Price Dropped!” indicators  
 
-### 3. Integrated JavaScript Previews (`main.js`)
-- The "Paste -> Preview" is even smoother, utilizing decoupled generic fetch requests (`/api/preview`) protected behind authentication walls.
-- Graphing data natively uses current HTML5 `<canvas>` tags interacting natively with custom `--primary-color` theme injections to match light/dark mode instantly.
+### ⚖️ Price Comparison
+- Compare multiple product links  
+- Highlight the **best deal in green**
 
-## 🚀 How to Launch Your New App
-To access your completely fresh V2 deployment:
-1. Open up a terminal.
-2. Navigate into the new GPT directory: `cd c:/Users/hp/OneDrive/Desktop/GPT`
-3. Automatically install our requirements and the `werkzeug` package needed for hashing:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Run your application!
-   ```bash
-   python app.py
-   ```
+---
 
-*You can open your browser to `http://127.0.0.1:5000` to dive into the stunning new split-view login interfaces!*
+## 👥 User Features
+
+### 🏷️ Eco Tags
+- Labels like *Recyclable*, *Organic*, *Low Waste*  
+
+### 👍 Green Deal Voting
+- Upvote eco-friendly deals  
+- Discover **Trending Green Deals 🌿**
+
+### 📊 Watchlist Dashboard
+- Track saved products  
+- View price trends and eco scores  
+
+---
+
+## 📈 Visualization
+
+- 📉 Price history graphs  
+- 🕒 Price drop timeline  
+- 🎯 Deal score meter  
+
+---
+
+## 🌍 Sustainability
+
+- 🍃 Eco score calculator  
+- 🌎 Carbon savings estimator  
+- 🔄 Green alternatives suggestion  
+
+---
+
+## ⚙️ Technical Features
+
+- Scheduled price scraping  
+- URL metadata extraction  
+- CSV export  
+- Minimal green UI + dark mode  
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python (Flask/Django)  
+- **Frontend:** HTML, CSS, JS  
+- **Database:** SQLite / PostgreSQL  
+- **Scraping:** Requests + BeautifulSoup  
+- **Charts:** Chart.js / Plotly  
+
+---
+
+## 🎯 Goal
+
+To enable **smart and sustainable shopping** through a simple, user-friendly platform.
+
+---
+
+## 👩‍💻 Author
+
+Built as a Python project focused on real-world problem solving and clean design.
