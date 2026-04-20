@@ -86,3 +86,10 @@ To enable **smart and sustainable shopping** through a simple, user-friendly pla
 ## 👩‍💻 Author
 
 Built as a Python project focused on real-world problem solving and clean design.
+Develper:
+Adhya Rahevar 
+https://github.com/AdhyaRahevar
+
+Developer:
+Rajviba Chudasama
+https://github.com/rajvibachudasama
